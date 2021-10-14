@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        section{
+            display:grid;
+            width:max-content;
+            margin:auto;
+            grid-template-columns: max-content max-content max-content;
+        }
+        .box{
+            position:relative;
+            width:300px;
+            border:1px solid rgb(100, 100, 100);
+            margin-left:1rem;
+            margin-right:1rem;
+            /* margin-bottom:1rem; */
+        }
+        .box{
+            margin:0.5rem;
+        }
+        .box:first-of-type{
+            height:300px;
+        }
+        .box:nth-of-type(2){
+            height:400px;
+        }
+        .box:nth-of-type(3){
+            height:350px;
+        }
+        .box:nth-of-type(4){
+            height:500px;
+        }
+    </style>
+    <section>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </section>
+    <script>
+
+        function mosaic(boxes, separation=30){
+            let availableColumns = [];
+
+            //This block creates the number of columns
+            let i, j, end=false, k;
+            for (j = 0; j < boxes.length; j++){
+                if ( availableColumns.length ==0 ){
+                    availableColumns.push({
+                        left:boxes[j].getBoundingClientRect().x
+                    })
+                    continue;
+                }
+
+                //The code to know the column already exists
+                for (i=0; i<availableColumns.length; i++){
+                    if(availableColumns[i].left == boxes[j].getBoundingClientRect().x){
+                        end=true;
+                        break;
+                    }
+                }
+                
+                if(end)
+                    break;
+                availableColumns.push({
+                    left:boxes[j].getBoundingClientRect().x
+                })
+            }
+            //console.log(availableColumns);
+
+            //this block loops through all the boxes in the viewport
+            let m;
+            for (m=0; m < boxes.length; m++){
+                //This block targets the box above current box
+                let l, element=boxes[m];
+                for ( k = 0; k < availableColumns.length; k++){
+                    if(element.getBoundingClientRect().x == availableColumns[k].left){
+                        if(m-availableColumns.length >= 0)
+                            element.style.top = boxes[m-availableColumns.length].getBoundingClientRect().bottom+separation-element.getBoundingClientRect().top+"px";
+                        break;
+                    }
+                }
+            }
+        }
+
+        mosaic(document.getElementsByClassName("box"), 20);
+        
+    </script>
+</body>
+</html>
